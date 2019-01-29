@@ -1,0 +1,52 @@
+-- Top level stuff
+PDefs.  Program     ::= [Def] ;
+
+--    token PostProcDir ('#' char*) ;
+-- PProc.      PPD     ::= PostProcDir ;
+
+terminator Def "" ;
+
+-- Comments
+
+    comment "//" ;
+    comment "/*" "*/" ;
+    comment "#" ;           -- Treat pre-processor directives as comments and ignore them
+
+-- Functions
+DFun.       Def     ::= Type Id Arglist FBody ;
+AList.      Arglist ::= "(" [Arg] ")" ;
+SEmpty.     FBody   ::= ";" ;
+SList.      FBody   ::= "{" [Stm] "}" ;
+ADecl.      Arg     ::= Type Id ;
+
+    separator   Arg "," ;
+    terminator  Stm "" ;
+
+-- Statements
+SInit.      Stm     ::= Type Id "=" Exp ";" ;
+SReturn.    Stm     ::= "return" Exp ";" ;
+
+-- Expressions
+EInt.       Exp16   ::= Integer ;
+EDouble.    Exp16   ::= Double ;
+EString.    Exp16   ::= String ;
+EQualC.     Exp16   ::= [Id] ;
+
+ERShift.    Exp10   ::= Exp10 "<<" Exp11 ;
+ELShift.    Exp10   ::= Exp10 ">>" Exp11 ;
+
+
+    separator nonempty Id "::" ;
+    coercions Exp 15 ;
+    separator Exp "," ;
+
+-- Types
+Tbool.      Type    ::= "bool" ;
+Tdouble.    Type    ::= "double" ;
+Tint.       Type    ::= "int" ;
+Tstring.    Type    ::= "string" ;
+Tvoid.      Type    ::= "void" ;
+TQualC.     Type    ::= [Id] ;
+
+    token Id (letter (letter | digit | '_')*) ;
+

@@ -1,0 +1,116 @@
+-- Top level stuff
+PDefs.  Program     ::= [Def] ;
+
+-- Top-level definitions
+DUsing.     Def     ::= "using" [Id] ";" ;
+DTypeDef.   Def     ::= TDefStm ";" ;
+DFun.       Def     ::= Type Id Arglist FBody ;
+DArg.       Def     ::= Type [Var] ";" ;
+
+    terminator Def "" ;
+
+-- Comments
+
+    comment "//" ;
+    comment "/*" "*/" ;
+    comment "#" ;           -- Treat pre-processor directives as comments and ignore them
+
+-- Functions
+AList.      Arglist ::= "(" [Arg] ")" ;
+SEmpty.     FBody   ::= ";" ;
+SList.      FBody   ::= "{" [Stm] "}" ;
+Argum.      Arg     ::= Type ArgDecl ;
+ArgumCons.  Arg     ::= "const" Type ArgDecl ;
+AEmpty.     ArgDecl ::= ;
+AIdent.     ArgDecl ::= Id ;
+AInit.      ArgDecl ::= Id "=" Exp ;
+
+    separator   Arg "," ;
+    terminator  Stm "" ;
+
+-- Statements
+SExp.       Stm     ::= Exp ";" ;
+SDecl.      Stm     ::= Type [Var] ";" ;
+SDeclCons.  Stm     ::= "const" Type [Var] ";" ;
+SReturn.    Stm     ::= "return" Exp ";" ;
+SWhile.     Stm     ::= "while" "(" Exp ")" Stm ;
+SDoWhile.   Stm     ::= "do" Stm "while" "(" Exp ")" ";" ;
+SFor.       Stm     ::= "for" "(" Arg ";" Exp ";" Exp ")" Stm ;
+SBlock.     Stm     ::= "{" [Stm] "}" ;
+SIf.        Stm     ::= "if" "(" Exp ")" Stm ;
+SIfElse.    Stm     ::= "if" "(" Exp ")" Stm "else" Stm ;
+STypeDef.   Stm     ::= TDefStm ";" ;
+TypeDef.    TDefStm ::= "typedef" Type Id ;
+
+-- Variables
+VDecl.      Var     ::= Id ;
+VInit.      Var     ::= Id "=" Exp ;
+
+    separator nonempty   Var "," ;
+
+-- Expressions
+ELit.       Exp15   ::= Lit ;
+EQualC.     Exp15   ::= [Id] ;
+
+EIndex.     Exp14   ::= Exp14 "[" Exp "]";
+ECall.      Exp14   ::= Exp14 "(" [Exp] ")" ;
+EProj1.     Exp14   ::= Exp14 "." Exp15 ;
+EProj2.     Exp14   ::= Exp14 "->" Exp15 ;
+EPIncr.     Exp14   ::= Exp14 "++" ;
+EPDecr.     Exp14   ::= Exp14 "--" ;
+
+EIncr.      Exp13   ::= "++" Exp13 ;
+EDecr.      Exp13   ::= "--" Exp13 ;
+EDeref.     Exp13   ::= "*" Exp13 ;
+ENeg.       Exp13   ::= "!" Exp13 ;
+
+EMul.       Exp12   ::= Exp12 "*" Exp13 ;
+EDiv.       Exp12   ::= Exp12 "/" Exp13 ;
+ERem.       Exp12   ::= Exp12 "%" Exp13 ;
+
+EAdd.       Exp11   ::= Exp11 "+" Exp12 ;
+Esub.       Exp11   ::= Exp11 "-" Exp12 ;
+
+ERShift.    Exp10   ::= Exp10 "<<" Exp11 ;
+ELShift.    Exp10   ::= Exp10 ">>" Exp11 ;
+
+ELt.        Exp9    ::= Exp9 "<" Exp10 ;
+EGt.        Exp9    ::= Exp9 ">" Exp10 ;
+ELEq.       Exp9    ::= Exp9 "<=" Exp10 ;
+EGEq.       Exp9    ::= Exp9 ">=" Exp10 ;
+
+EEq.        Exp8    ::= Exp8 "==" Exp9 ;
+ENEq.       Exp8    ::= Exp8 "!=" Exp9 ;
+
+EAnd.       Exp4    ::= Exp4 "&&" Exp5 ;
+
+EOr.        Exp3    ::= Exp3 "||" Exp4 ;
+
+EAss.       Exp2    ::= Exp3 "=" Exp2 ;
+EPAss.      Exp2    ::= Exp3 "+=" Exp2;
+EMAss.      Exp2    ::= Exp3 "-=" Exp2;
+ECond.      Exp2    ::= Exp3 "?" Exp ":" Exp2 ;
+
+EExcep.     Exp1    ::= "throw" Exp1 ;
+
+    separator nonempty Id "::" ;
+    coercions Exp 15 ;
+    separator Exp "," ;
+
+-- Types
+Tint.       Type    ::= "int" ;
+Tbool.      Type    ::= "bool" ;
+Tchar.      Type    ::= "char" ;
+Tdouble.    Type    ::= "double" ;
+Tvoid.      Type    ::= "void" ;
+TQualC.     Type    ::= [Id] ;
+TRef.       Type   ::= Type "&" ;
+
+    token Id (letter (letter | digit | '_')*) ;
+
+-- Literals
+LInt.       Lit     ::= Integer ;
+LDouble.    Lit     ::= Double ;
+LChar.      Lit     ::= Char ;
+LString.    Lit     ::= [String] ;
+    separator nonempty String ""

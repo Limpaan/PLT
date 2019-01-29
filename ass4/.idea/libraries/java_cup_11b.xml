@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="java-cup-11b">
+    <CLASSES>
+      <root url="jar:///usr/local/java/Cup/java-cup-11b.jar!/" />
+      <root url="file:///usr/local/java/Cup" />
+      <root url="file:///usr/local/java" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file:///usr/local/java" />
+    </SOURCES>
+    <jarDirectory url="file:///usr/local/java/Cup" recursive="false" />
+  </library>
+</component>
